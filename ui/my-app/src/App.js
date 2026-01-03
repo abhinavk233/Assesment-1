@@ -84,10 +84,10 @@ const [error,setError]=useState("");
           {error}</p>}
 
           {avalphaCommission !=null && (
-             <p>Total Avalpha Technologies commission: {avalphaCommission}</p>
+             <p>Total Avalpha Technologies commission: ₹{avalphaCommission}</p>
           )}
         {competitorCommission !=null && (
-             <p>Total Avalpha Technologies commission: {competitorCommission}</p>
+             <p>Total Avalpha Technologies commission: ₹{competitorCommission}</p>
           )}
         
       </div>
