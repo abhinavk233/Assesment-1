@@ -37,8 +37,8 @@ async function calculate(event){
         throw new Error("Getting error from fetching response from Api");
       }
       const data=await response.json();
-      setAvalphaCommission(data.totalAvalphaTechnologiesCommission);
-      setCompetitorCommission(data.competitorCommission)
+      setAvalphaCommission(data.AvalphaTechnologiesCommissionAmount);
+      setCompetitorCommission(data.CompetitorCommissionAmount)
     }catch (err){
       setError(err.message)
     }
