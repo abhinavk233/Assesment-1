@@ -1,13 +1,58 @@
 import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 
-function calculate(){
+async function calculate(event){
   // Get calculation from the backend
   // Update results area
+  event.preventDefault();
+  setError("");
+
+  if (localSalesCount==="" ||foreignSalesCount===""|| averageSaleAmount==="" )
+    {
+    setError("All fields are Required");
+    return;
+  }
+  if (localSalesCount<0 ||foreignSalesCount<0|| averageSaleAmount<0 )
+    {
+    setError("Values For localSalesCount,foreignSalesCount,averageSaleAmount must be greater than 0 ");
+
+    return;
+  }
+  try{
+    const response =await fetch("https://localhost:5000/Commission",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+
+      },
+      body:JSON.stringify({
+          localSalesCount:Number(localSalesCount),
+           foreignSalesCount:Number(foreignSalesCount), 
+            averageSaleAmount:Number(averageSaleAmount),
+    }),
+
+        });
+      if(!response.ok){
+        throw new Error("Getting error from fetching response from Api");
+      }
+      const data=await response.json();
+      setAvalphaCommission(data.totalAvalphaTechnologiesCommission);
+      setCompetitorCommission(data.competitorCommission)
+    }catch (err){
+      setError(err.message)
+    }
+    
+  
 }
 
 function App() {
-
+const [localSalesCount,setLocalSalesCount]=useState("");
+const [foreignSalesCount,setForeignSalesCount]=useState("");
+const [averageSaleAmount,setAverageSaleAmount]=useState("");
+const [avalphaCommission,setAvalphaCommission]=useState("");
+const [competitorCommission,setCompetitorCommission]=useState("");
+const [error,setError]=useState("");
   const totalAvalphaTechnologiesCommission = 50;
   const totalCompetitorCommission = 10;
   return (
@@ -15,15 +60,19 @@ function App() {
       <header className="App-header">
         <div>
         </div>
-        <form action={calculate}>
+        <form onSubmit={calculate}>
           <label for="localSalesCount">Local Sales Count</label>  
-          <input name="localSalesCount" /><br />
+          <input name="localSalesCount"  value={localSalesCount} onChange={(e)=>setLocalSalesCount(e.target.value)}/><br />
 
           <label for="foreignSalesCount">Foreign Sales Count</label>  
-          <input name="foreignSalesCount" /><br />
+          <input name="foreignSalesCount" 
+          value={foreignSalesCount} onChange={(e)=>setForeignSalesCount(e.target.value)}
+          /><br />
           
           <label for="averageSaleAmount">Average Sale Amount</label>  
-          <input name="averageSaleAmount" /><br />
+          <input name="averageSaleAmount" 
+           value={averageSaleAmount} onChange={(e)=>setAverageSaleAmount(e.target.value)}
+          /><br />
 
           <button type="submit">Calculate</button>
         </form>
@@ -31,8 +80,16 @@ function App() {
 
       <div>
         <h3>Results</h3>
-        <p>Total Avalpha Technologies commission: {totalAvalphaTechnologiesCommission}</p>
-        <p>Total Competitor commission: {totalCompetitorCommission}</p>
+        {error && <p style={{color:"red"}}>
+          {error}</p>}
+
+          {avalphaCommission !=null && (
+             <p>Total Avalpha Technologies commission: {avalphaCommission}</p>
+          )}
+        {competitorCommission !=null && (
+             <p>Total Avalpha Technologies commission: {competitorCommission}</p>
+          )}
+        
       </div>
     </div>
   );

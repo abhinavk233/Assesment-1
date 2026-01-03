@@ -10,10 +10,18 @@ namespace AvalphaTechnologies.CommissionCalculator.Controllers
         [HttpPost]
         public IActionResult Calculate(CommissionCalculationRequest calculationRequest)
         {
-            return Ok(new CommissionCalculationResponse() { 
-                AvalphaTechnologiesCommissionAmount = 999,
-                CompetitorCommissionAmount = 100
-            });
+           if (calculationRequest == null || calculationRequest.LocalSalesCount<0 ||calculationRequest.ForeignSalesCount < 0 ||calculationRequest.AverageSaleAmount< 0){
+            return BadRequest("Invalid input values for calculation .")
+           }
+
+           decimal AvalphaTechnologiesCommission =(0.20*calculationRequest.LocalSalesCount+0.35m * calculationRequest.ForeignSalesCount)*calculationRequest.AverageSaleAmount;
+           decimal CompetitorCommission =(0.20*calculationRequest.LocalSalesCount+0.0755m * calculationRequest.ForeignSalesCount)*calculationRequest.AverageSaleAmount;
+           var response=new CommissionCalculationResponse
+           {
+            AvalphaTechnologiesCommissionAmount=decimal.Round(AvalphaTechnologiesCommission,2),
+            CompetitorCommissionAmount=decimal.Round(CompetitorCommission,2)
+           }
+            return Ok(response);
         }
     }
 
