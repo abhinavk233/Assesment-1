@@ -20,7 +20,7 @@ async function calculate(event){
     return;
   }
   try{
-    const response =await fetch("https://localhost:5000/Commission",{
+    const response =await fetch("https://localhost:5000/Commision/",{
       method:"POST",
       headers:{
         "Content-Type":"application/json",
